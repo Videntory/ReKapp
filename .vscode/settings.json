@@ -1,0 +1,8 @@
+{
+    "code-runner.runInTerminal": true,
+    "code-runner.showExecutionMessage": true,
+    "code-runner.executorMap": {
+        "rust": "cargo run --verbose",
+        "rust_single-file": "cd $dir && rustc $fileName && $dir$fileNameWithoutExt",
+    }
+}
