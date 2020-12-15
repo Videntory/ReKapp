@@ -1,6 +1,3 @@
-# ReKapp
-A hobby Twitch VoD and livestream downloader made in Rust.
-
 <div align="center">
     <p><h1>ReKapp</h1></p>
     <p><strong>A hobby Twitch VoD and livestream downloader made in Rust.</strong></p>
