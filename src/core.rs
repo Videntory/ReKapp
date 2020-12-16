@@ -1,8 +1,9 @@
 use queues::*;
 use std::error::Error;
+use hyper::Body;
 
 
-async fn live_download_as_ts_file<C>(fn_update_ts_urls: impl Fn() -> (Vec<String>, Vec<String>), fn_download_ts_file: impl Fn(url: &str) -> Stream) -> Result<(), Box<dyn Error + Send + Sync>> {
+async fn live_download_as_ts_file<C>(fn_update_ts_urls: impl Fn() -> (Vec<String>, Vec<String>), fn_download_ts_file: impl Fn(&str) -> Body) -> Result<(), Box<dyn Error + Send + Sync>> {
     // #EXT-X-VERSION:(.+)(?:.*\s*#)*EXT-X-MEDIA-SEQUENCE:(.+)\s*((?:(?:.|\s)*?#EXTINF:.*live\s+https:\/\/.*.ts+)+)\s+((?:(?:.|\s)*?#EXT-X-TWITCH-PREFETCH:https:\/\/.*.ts+)+)
     // TODO: extract from text_test
     let version: usize = 3; // FIXME: needs to allow for decimals 3, 3.0, 3.1
