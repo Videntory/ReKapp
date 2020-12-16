@@ -4,6 +4,7 @@ extern crate hyper;
 extern crate regex;
 extern crate async_compression;
 extern crate rand;
+extern crate queues;
 
 use std::error::Error;
 use hyper::body;
@@ -57,8 +58,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
 async fn from_live_channel<C>(client: Client<C, Body>, channel_name: &str) -> Result<(), Box<dyn Error + Send + Sync>>
 where
-    C: Connect + Send + Clone + Sync + 'static
-{
+    C: Connect + Send + Clone + Sync + 'static {
     println!("from_live_channel");
     // TODO: check security of using {channel_name} in format!(url + channel_name) GET request
     let request = Request::builder()
@@ -154,7 +154,7 @@ where
         //.header("User-Agent", "None/1.0 (None)")
         .body(Body::empty())
         .unwrap();
-
+    
     let gql_options_response = client.request(gql_options_request).await?;
     let query = format!(r#"{{"operationName":"PlaybackAccessToken_Template","query":"query PlaybackAccessToken_Template($login: String!, $isLive: Boolean!, $vodID: ID!, $isVod: Boolean!, $playerType: String!) {{  streamPlaybackAccessToken(channelName: $login, params: {{platform: \"web\", playerBackend: \"mediaplayer\", playerType: $playerType}}) @include(if: $isLive) {{    value    signature    __typename  }}  videoPlaybackAccessToken(id: $vodID, params: {{platform: \"web\", playerBackend: \"mediaplayer\", playerType: $playerType}}) @include(if: $isVod) {{    value    signature    __typename  }}}}","variables":{{"isLive":true,"login":"{}","isVod":false,"vodID":"","playerType":"site"}}}}"#, channel_name);
     let gql_playback_access_token_template_request = Request::builder()
@@ -190,7 +190,7 @@ where
     let stream_playback_access_token_response: StreamPlaybackAccessTokenResponse =  serde_json::from_str(new_body.as_str())?;
 
     let mut rng = rand::thread_rng();
-    let p = rng.gen_range(0, 999999 + 1);
+    let p: usize = rng.gen_range(0, 999999 + 1);
     //let p = (9999999 * rng.gen()).floor();
     // "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx".replace(/[xy]/g, (function(e) {
     //     var t = 16 * Math.random() | 0;
@@ -253,7 +253,6 @@ where
     };
     
     println!("text_test: {}", text_test);
-    
 
     Ok(())
 }
